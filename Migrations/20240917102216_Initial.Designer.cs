@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarpoolAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240917083454_Initial")]
+    [Migration("20240917102216_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -34,24 +34,26 @@ namespace CarpoolAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Distance")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
 
                     b.ToTable("Drives");
                 });
 
-            modelBuilder.Entity("CarpoolAPI.Models.Entities.User", b =>
+            modelBuilder.Entity("CarpoolAPI.Models.Entities.Driver", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +71,18 @@ namespace CarpoolAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Drivers");
+                });
+
+            modelBuilder.Entity("CarpoolAPI.Models.Entities.Drive", b =>
+                {
+                    b.HasOne("CarpoolAPI.Models.Entities.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
                 });
 #pragma warning restore 612, 618
         }

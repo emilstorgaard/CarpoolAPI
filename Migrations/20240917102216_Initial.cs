@@ -12,23 +12,7 @@ namespace CarpoolAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Drives",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Distance = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Drives", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Drivers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -38,8 +22,35 @@ namespace CarpoolAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Drivers", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Drives",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DriverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Distance = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drives", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Drives_Drivers_DriverId",
+                        column: x => x.DriverId,
+                        principalTable: "Drivers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Drives_DriverId",
+                table: "Drives",
+                column: "DriverId");
         }
 
         /// <inheritdoc />
@@ -49,7 +60,7 @@ namespace CarpoolAPI.Migrations
                 name: "Drives");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Drivers");
         }
     }
 }
