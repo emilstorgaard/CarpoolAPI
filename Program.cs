@@ -1,4 +1,5 @@
 using CarpoolAPI.Data;
+using CarpoolAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register services
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddCors(options =>
 {
