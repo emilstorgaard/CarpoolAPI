@@ -13,53 +13,79 @@ namespace CarpoolAPI.Services
             _dbContext = dbContext;
         }
 
-        public async Task<DriverStatsDto?> GetDriverStatsAsync(Guid id)
+        public async Task<UserStatsDto?> GetUserStatsAsync(Guid id)
         {
-            var driverStats = await _dbContext.Drives
-                .Where(d => d.DriverId == id)
-                .GroupBy(d => new { d.DriverId, d.Driver.Name })
-                .Select(g => new DriverStatsDto
+            var userWithTrips = await _dbContext.Users
+                .Where(u => u.Id == id)
+                .Select(u => new
                 {
-                    DriverId = g.Key.DriverId,
-                    DriverName = g.Key.Name,
-                    TotalDrives = g.Count(),
-                    TotalDistance = g.Sum(d => d.Distance)
+                    User = u,
+                    Trips = _dbContext.Trips.Where(trip => trip.UserId == u.Id).ToList()
                 })
                 .FirstOrDefaultAsync();
 
-            return driverStats;
+            if (userWithTrips == null) return null;
+
+            var userStats = new UserStatsDto
+            {
+                UserId = userWithTrips.User.Id,
+                UserName = userWithTrips.User.Name,
+                TotalTrips = userWithTrips.Trips.Count,
+                TotalDistance = userWithTrips.Trips.Sum(trip => trip.Distance),
+
+                TotalTime = userWithTrips.Trips.Any()
+                    ? new TimeSpan(userWithTrips.Trips.Sum(trip => (trip.StopDate - trip.StartDate).Ticks))
+                    : TimeSpan.Zero
+            };
+
+            return userStats;
         }
 
-        public async Task<List<DriverStatsDto>> GetDriversStatsAsync()
+        public async Task<List<UserStatsDto>> GetUsersStatsAsync()
         {
-            var driverStats = await _dbContext.Drivers
-                .GroupJoin(
-                    _dbContext.Drives,
-                    user => user.Id,
-                    drive => drive.DriverId,
-                    (user, drives) => new DriverStatsDto
-                    {
-                        DriverId = user.Id,
-                        DriverName = user.Name,
-                        TotalDrives = drives.Count(),
-                        TotalDistance = drives.Sum(d => d.Distance)
-                    })
+            var usersWithTrips = await _dbContext.Users
+                .Select(user => new
+                {
+                    User = user,
+                    Trips = _dbContext.Trips.Where(trip => trip.UserId == user.Id).ToList()
+                })
                 .ToListAsync();
 
-            return driverStats;
+            var userStats = usersWithTrips.Select(u => new UserStatsDto
+            {
+                UserId = u.User.Id,
+                UserName = u.User.Name,
+                TotalTrips = u.Trips.Count,
+                TotalDistance = u.Trips.Sum(trip => trip.Distance),
+
+                TotalTime = u.Trips.Any()
+                    ? new TimeSpan(u.Trips.Sum(trip => (trip.StopDate - trip.StartDate).Ticks))
+                    : TimeSpan.Zero
+            }).ToList();
+
+            return userStats;
         }
 
         public async Task<TotalStatsDto> GetTotalStatsAsync()
         {
-            var totalDrives = await _dbContext.Drives.CountAsync();
-            var totalDistance = await _dbContext.Drives.SumAsync(d => d.Distance);
-            var totalDrivers = await _dbContext.Drivers.CountAsync();
+            var trips = await _dbContext.Trips.ToListAsync();
+
+            var totalTrips = trips.Count();
+            var totalDistance = trips.Sum(d => d.Distance);
+            var totalUsers = await _dbContext.Users.CountAsync();
+
+            TimeSpan totalTime = TimeSpan.Zero;
+            foreach (var trip in trips)
+            {
+                totalTime += trip.StopDate - trip.StartDate;
+            }
 
             var totalStats = new TotalStatsDto
             {
-                TotalDrives = totalDrives,
+                TotalTrips = totalTrips,
                 TotalDistance = totalDistance,
-                TotalDrivers = totalDrivers
+                TotalUsers = totalUsers,
+                TotalTime = totalTime
             };
 
             return totalStats;

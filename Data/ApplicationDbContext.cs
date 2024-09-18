@@ -10,7 +10,8 @@ namespace CarpoolAPI.Data
             
         }
 
-        public DbSet<Driver> Drivers { get; set; }
-        public DbSet<Drive> Drives { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Trip> Trips { get; set; }
+        public DbSet<Passenger> Passengers { get; set; }
     }
 }

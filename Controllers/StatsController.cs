@@ -14,22 +14,22 @@ namespace CarpoolAPI.Controllers
             _statService = statService;
         }
 
-        [HttpGet("Driver/{id:guid}")]
-        public async Task<IActionResult> GetDriverStats(Guid id)
+        [HttpGet("User/{id:guid}")]
+        public async Task<IActionResult> GetÚserStats(Guid id)
         {
-            var driverStats = await _statService.GetDriverStatsAsync(id);
-            if (driverStats == null) return NotFound();
+            var userStats = await _statService.GetUserStatsAsync(id);
+            if (userStats == null) return NotFound();
 
-            return Ok(driverStats);
+            return Ok(userStats);
         }
 
-        [HttpGet("Drivers")]
-        public async Task<IActionResult> GetDriversStats()
+        [HttpGet("Users")]
+        public async Task<IActionResult> GetUsersStats()
         {
-            var driversStats = await _statService.GetDriversStatsAsync();
-            if (driversStats == null) return NotFound();
+            var usersStats = await _statService.GetUsersStatsAsync();
+            if (usersStats == null) return NotFound();
 
-            return Ok(driversStats);
+            return Ok(usersStats);
         }
 
         [HttpGet("Total")]

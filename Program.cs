@@ -15,8 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register services
-builder.Services.AddScoped<DriverService>();
-builder.Services.AddScoped<DriveService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TripService>();
+builder.Services.AddScoped<PassengerService>();
 builder.Services.AddScoped<StatService>();
 
 builder.Services.AddCors(options =>

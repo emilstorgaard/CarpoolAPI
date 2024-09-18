@@ -22,7 +22,24 @@ namespace CarpoolAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CarpoolAPI.Models.Entities.Drive", b =>
+            modelBuilder.Entity("CarpoolAPI.Models.Entities.Passenger", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Passengers");
+                });
+
+            modelBuilder.Entity("CarpoolAPI.Models.Entities.Trip", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,26 +48,32 @@ namespace CarpoolAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Distance")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("DriverId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsCarpool")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StopDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DriverId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Drives");
+                    b.ToTable("Trips");
                 });
 
-            modelBuilder.Entity("CarpoolAPI.Models.Entities.Driver", b =>
+            modelBuilder.Entity("CarpoolAPI.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,18 +91,18 @@ namespace CarpoolAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Drivers");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CarpoolAPI.Models.Entities.Drive", b =>
+            modelBuilder.Entity("CarpoolAPI.Models.Entities.Trip", b =>
                 {
-                    b.HasOne("CarpoolAPI.Models.Entities.Driver", "Driver")
+                    b.HasOne("CarpoolAPI.Models.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("DriverId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Driver");
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,6 @@
 ﻿namespace CarpoolAPI.Models.Entities
 {
-    public class Driver
+    public class User
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
