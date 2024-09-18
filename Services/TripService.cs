@@ -24,6 +24,11 @@ namespace CarpoolAPI.Services
             return await _dbContext.Trips.FirstOrDefaultAsync(d => d.Id == id);
         }
 
+        public async Task<List<Trip>> GetTripsByUser(Guid userId)
+        {
+            return await _dbContext.Trips.Where(t => t.UserId == userId).ToListAsync();
+        }
+
         public async Task<bool?> AddTripAsync(TripDto tripDto)
         {
             if (tripDto == null) return null;

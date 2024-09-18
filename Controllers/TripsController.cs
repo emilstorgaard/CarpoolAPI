@@ -33,6 +33,15 @@ namespace CarpoolAPI.Controllers
             return Ok(trip);
         }
 
+        [HttpGet("User/{userId:guid}")]
+        public async Task<IActionResult> GetTripsByUserId(Guid userId)
+        {
+            var trip = await _tripService.GetTripsByUser(userId);
+            if (trip == null) return NotFound();
+
+            return Ok(trip);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddTrip(TripDto tripDto)
         {

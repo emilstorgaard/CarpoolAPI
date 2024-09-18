@@ -7,6 +7,7 @@ namespace CarpoolAPI.Services
     {
         Task<List<Trip>> GetTrips();
         Task<Trip?> GetTrip(Guid id);
+        Task<List<Trip>> GetTripsByUser(Guid userId);
         Task<bool?> AddTripAsync(TripDto tripDto);
         Task<bool?> DeleteTripAsync(Guid id);
         Task<bool?> UpdateTrip(Guid id, TripDto tripDto);
