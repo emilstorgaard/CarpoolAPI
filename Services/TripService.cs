@@ -16,7 +16,7 @@ namespace CarpoolAPI.Services
 
         public async Task<List<Trip>> GetTrips()
         {
-            return await _dbContext.Trips.ToListAsync();
+            return await _dbContext.Trips.OrderByDescending(t => t.StartDate).ToListAsync();
         }
 
         public async Task<Trip?> GetTrip(Guid id)
@@ -26,7 +26,7 @@ namespace CarpoolAPI.Services
 
         public async Task<List<Trip>> GetTripsByUser(Guid userId)
         {
-            return await _dbContext.Trips.Where(t => t.UserId == userId).ToListAsync();
+            return await _dbContext.Trips.Where(t => t.UserId == userId).OrderByDescending(t => t.StartDate).ToListAsync();
         }
 
         public async Task<bool?> AddTripAsync(TripDto tripDto)
