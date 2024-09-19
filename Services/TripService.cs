@@ -57,6 +57,7 @@ namespace CarpoolAPI.Services
 
             trip.UserId = tripDto.UserId;
             trip.Distance = tripDto.Distance;
+            trip.IsCarpool = tripDto.IsCarpool;
             trip.StartDate = tripDto.StartDate;
             trip.StopDate = tripDto.StopDate;
 
